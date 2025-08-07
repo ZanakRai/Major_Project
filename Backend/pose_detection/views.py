@@ -50,9 +50,13 @@ class UserDashboard(APIView):
 
 class LogOut(APIView):
     permission_classes=[IsAuthenticated]
+    authentication_classes=[TokenAuthentication]
     def post(self,request):
-        request.user.auth_token.delete()
-        return Response({"message":"Logout successfully"})
+        user=request.user
+        if user.is_authenticated:
+            request.user.auth_token.delete()
+            return Response({"message":"Logout successfully"})
+        return Response({"message":"Unable to logout"})
 
 class PoseDetection(generics.GenericAPIView):
     parser_classes=[MultiPartParser]
